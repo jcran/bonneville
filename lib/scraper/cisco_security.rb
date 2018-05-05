@@ -12,6 +12,7 @@ module Bonneville
         doc = Nokogiri::HTML body
 
         out = {}
+        out["_raw"] = body
 
         # Description
         description = doc.xpath("//*[@id=\"summaryfield\"]")

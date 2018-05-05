@@ -7,10 +7,11 @@ module Bonneville
       def scrape(uri)
 
         # get the discussion
-        body  = http_get_body "#{uri}/discuss"
+        body  = http_get_body "#{uri.gsub("http:","https:")}/discuss"
         return nil unless body
         doc = Nokogiri::HTML body
         out = {}
+        out["_raw"] = body
 
         # Seems like this is a combination of desciption, impact
         discussion = doc.xpath("//*[@id='vulnerability']")

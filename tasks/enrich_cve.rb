@@ -27,7 +27,7 @@ class EnrichCve < Intrigue::Task::BaseTask
 
     # Go grab the References
     #
-    refs = @entity.get_detail "references"
+    refs = _get_entity_detail "references"
 
     unless refs
       _log_error "No References!!!"
@@ -36,30 +36,66 @@ class EnrichCve < Intrigue::Task::BaseTask
     refs.map! do |ref|
 
       # Choose the right parser depending on the URI pattern
-      if ref["url"] =~ /ics-cert.us-cert.gov/
+      if ref["url"] =~ /source.android.com\/security\/bulletin/
+        ref["type"] = "android"
+        # TODO - android » api/scrape
+
+      elsif ref["url"] =~ /ics-cert.us-cert.gov/
         ref["type"] = "ics_cert"
-        ref["scraped"] = Bonneville::Scraper::IcsCert.new.scrape(ref["url"])
+        ref["data"] = Bonneville::Scraper::IcsCert.new.scrape(ref["url"])
+
+      elsif ref["url"] =~/chromium.org/
+        ref["type"] = "cisco_security"
+        ref["data"] = Bonneville::Scraper::CiscoSecurity.new.scrape(ref["url"])
 
       elsif ref["url"] =~/tools.cisco.com/
         ref["type"] = "cisco_security"
-        ref["scraped"] = Bonneville::Scraper::CiscoSecurity.new.scrape(ref["url"])
+        ref["data"] = Bonneville::Scraper::CiscoSecurity.new.scrape(ref["url"])
 
-      elsif ref["url"] =~/kb.juniper.net/
+      elsif ref["url"] =~ /exploit-db.com/
+        ref["type"] = "exploit_db"
+        # TODO - exploitdb api/scrape
+
+      elsif ref["url"] =~ /fortigard/
+        ref["type"] = "fortigard"
+        # TODO - fortigard api/scrape
+
+      elsif ref["url"] =~ /kb.juniper.net/
         ref["type"] = "juniper_security"
-        ref["scraped"] = Bonneville::Scraper::JuniperSecurity.new.scrape(ref["url"])
+        ref["data"] = Bonneville::Scraper::JuniperSecurity.new.scrape(ref["url"])
 
-      elsif ref["uri"] =~ /portal.msrc.microsoft.com/
+      elsif ref["url"] =~ /metasploit.com/
+        ref["type"] = "metasploit"
+        # TODO - metasploit api/scrape
+
+      elsif ref["url"] =~ /portal.msrc.microsoft.com/
         ref["type"] = "microsoft_security"
-        # TODO - build an API client, scraping hits
+        # TODO - microsoft api/scrape
+
+      elsif ref["url"] =~ /openwall.com/
+        ref["type"] = "openwall"
+        # TODO - openwall mailing list api/scrape
+
+      elsif ref["url"] =~ /bugzilla.redhat.com/
+        ref["type"] = "red_hat"
+        # TODO - microsoft api/scrape
 
       elsif ref["url"] =~ /securitytracker.com/
         ref["type"] = "security_tracker"
-        ref["scraped"] = Bonneville::Scraper::SecurityTracker.new.scrape(ref["url"])
+        ref["data"] = Bonneville::Scraper::SecurityTracker.new.scrape(ref["url"])
 
-      elsif ref["uri"] =~ /www.securityfocus.com/
+      elsif ref["url"] =~ /securityfocus.com/
         ref["type"] = "security_focus"
-        uri = ref["url"].gsub("http:","https:") + "/discuss" # Fixup the correct uri
-        ref["scraped"] = Bonneville::Scraper::SecurityFocus.new.scrape(uri)
+        ref["data"] = Bonneville::Scraper::SecurityFocus.new.scrape(ref["url"])
+
+      elsif ref["url"] =~ /exchange.xforce.ibmcloud.com/
+        ref["type"] = "xforce"
+        ref["data"] = Bonneville::Api::Xforce.new.query(_get_entity_name)
+
+      else
+        ref["data"] = Bonneville::Scraper::Generic.new.scrape(uri)
+        ref["type"] = "unknown_reference"
+
       end
 
     ref

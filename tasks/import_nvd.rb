@@ -86,6 +86,7 @@ def run
         "name" => cve_id,
         "assigner" => cve_assigner,
         "cwe_id" => cwe_id,
+        "cve_id" => cve_id,
         "description" => description,
         "references" => references
       }
@@ -99,7 +100,7 @@ def _get_cwe_id(cve_entry)
   begin
     return cve_entry["cve"]["problemtype"]["problemtype_data"].first["description"].first["value"]
   rescue NoMethodError => e
-    _log_error "Unable to get CWE for #{cve_entry}: #{e}"
+    _log_error "Unable to get CWE for #{cve_entry["cve"]["CVE_data_meta"]["ID"]}: #{e}"
   end
 nil
 end
@@ -108,7 +109,7 @@ def _get_references(cve_entry)
   begin
     return cve_entry["cve"]["references"]["reference_data"]
   rescue NoMethodError => e
-    _log_error "Unable to get references for #{cve_entry}: #{e}"
+    _log_error "Unable to get references for #{cve_entry["cve"]["CVE_data_meta"]["ID"]}: #{e}"
   end
 nil
 end
@@ -117,7 +118,7 @@ def _get_description(cve_entry)
   begin
     return cve_entry["cve"]["description"]["description_data"].first["value"]
   rescue NoMethodError => e
-    _log_error "Unable to get description for #{cve_entry}: #{e}"
+    _log_error "Unable to get description for #{cve_entry["cve"]["CVE_data_meta"]["ID"]}: #{e}"
   end
 nil
 end

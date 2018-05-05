@@ -1,6 +1,6 @@
 module Bonneville
   module Scraper
-    class IcsCert
+    class Generic
 
       include Intrigue::Task::Web
 
@@ -8,12 +8,7 @@ module Bonneville
         body = http_get_body uri
         return nil unless body
         doc = Nokogiri::HTML body
-
-        out = {}
         out["_raw"] = body
-
-        advisory = doc.xpath("//*[@id='ncas-content']/div/div/div")
-        out[:advisory] = advisory.text if advisory
 
       out
       end
