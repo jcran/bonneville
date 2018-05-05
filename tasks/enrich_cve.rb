@@ -1,4 +1,4 @@
-require_relative '../lib/security_data'
+require_relative '../lib/bonneville'
 
 module Bonneville
 module Task
