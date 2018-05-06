@@ -36,9 +36,13 @@ class EnrichCve < Intrigue::Task::BaseTask
     refs.map! do |ref|
 
       # Choose the right parser depending on the URI pattern
-      if ref["url"] =~ /source.android.com\/security\/bulletin/
+      if ref["url"] =~ /source.android.com/
         ref["type"] = "android"
         # TODO - android » api/scrape
+
+      elsif ref["url"] =~ /support.apple.com/
+        ref["type"] = "apple"
+        ref["data"] = Bonneville::Scraper::Apple.new.scrape(ref["url"])
 
       elsif ref["url"] =~ /ics-cert.us-cert.gov/
         ref["type"] = "ics_cert"
@@ -47,6 +51,14 @@ class EnrichCve < Intrigue::Task::BaseTask
       elsif ref["url"] =~/chromium.org/
         ref["type"] = "cisco_security"
         ref["data"] = Bonneville::Scraper::CiscoSecurity.new.scrape(ref["url"])
+
+      elsif ref["url"] =~ /ciac.org/
+        ref["type"] = "ciac"
+        # TODO - ciac
+
+      elsif ref["url"] =~ /cisecurity.org/
+        ref["type"] = "cisecurity.org"
+        # TODO - cisecurity.org
 
       elsif ref["url"] =~/tools.cisco.com/
         ref["type"] = "cisco_security"
@@ -60,6 +72,11 @@ class EnrichCve < Intrigue::Task::BaseTask
         ref["type"] = "fortigard"
         # TODO - fortigard api/scrape
 
+      elsif ref["url"] =~ /itrc.hp.com/
+        ref["type"] = "itrc.hp.com"
+        # TODO - HP api/scrape
+
+
       elsif ref["url"] =~ /kb.juniper.net/
         ref["type"] = "juniper_security"
         ref["data"] = Bonneville::Scraper::JuniperSecurity.new.scrape(ref["url"])
@@ -67,6 +84,10 @@ class EnrichCve < Intrigue::Task::BaseTask
       elsif ref["url"] =~ /metasploit.com/
         ref["type"] = "metasploit"
         # TODO - metasploit api/scrape
+
+      elsif ref["url"] =~ /osvdb.org/
+        ref["type"] = ""
+        # TODO - osvdb
 
       elsif ref["url"] =~ /portal.msrc.microsoft.com/
         ref["type"] = "microsoft_security"
@@ -76,9 +97,13 @@ class EnrichCve < Intrigue::Task::BaseTask
         ref["type"] = "openwall"
         # TODO - openwall mailing list api/scrape
 
+      elsif ref["url"] =~ /oracle.com\/technetwork\/security-advisory/
+        ref["type"] = "oracle"
+        # TODO - oracle api/scrape
+
       elsif ref["url"] =~ /bugzilla.redhat.com/
         ref["type"] = "red_hat"
-        # TODO - microsoft api/scrape
+        # TODO - redhat api/scrape
 
       elsif ref["url"] =~ /securitytracker.com/
         ref["type"] = "security_tracker"
@@ -88,12 +113,20 @@ class EnrichCve < Intrigue::Task::BaseTask
         ref["type"] = "security_focus"
         ref["data"] = Bonneville::Scraper::SecurityFocus.new.scrape(ref["url"])
 
+      elsif ref["url"] =~ /sunsolve.sun.com/
+        ref["type"] = "sun.com"
+        # TODO - sun.com
+
+      elsif ref["url"] =~ /patches.sgi.com/
+        ref["type"] = "sgi"
+        # TODO - sgi
+
       elsif ref["url"] =~ /exchange.xforce.ibmcloud.com/
         ref["type"] = "xforce"
         ref["data"] = Bonneville::Api::Xforce.new.query(_get_entity_name)
 
       else
-        ref["data"] = Bonneville::Scraper::Generic.new.scrape(uri)
+        ref["data"] = Bonneville::Scraper::Generic.new.scrape(ref["url"])
         ref["type"] = "unknown_reference"
 
       end

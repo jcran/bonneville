@@ -4,8 +4,8 @@ module Bonneville
 
       include Intrigue::Task::Web
 
-      def query(uri)
-        _get_xforce_details
+      def query(cve_id)
+        _get_xforce_details(cve_id)
       end
 
       private

@@ -8,6 +8,7 @@ module Bonneville
         body = http_get_body uri
         return nil unless body
         doc = Nokogiri::HTML body
+        out = {}
         out["_raw"] = body
 
       out

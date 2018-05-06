@@ -14,3 +14,4 @@ require_relative 'scraper/security_tracker'
 
 ### Api
 require_relative 'api/microsoft_security'
+require_relative 'api/xforce'
