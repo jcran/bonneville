@@ -42,7 +42,7 @@ class EnrichCve < Intrigue::Task::BaseTask
 
       elsif ref["url"] =~ /support.apple.com/
         ref["type"] = "apple"
-        ref["data"] = Bonneville::Scraper::Apple.new.scrape(ref["url"])
+        # TODO - apple api/scrape
 
       elsif ref["url"] =~ /ics-cert.us-cert.gov/
         ref["type"] = "ics_cert"
