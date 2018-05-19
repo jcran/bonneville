@@ -2,8 +2,11 @@ module Bonneville
 module Handler
   class BonnevilleSimpleJson < Intrigue::Handler::Base
 
-    def self.type
-      "bonneville_simple_json"
+    def self.metadata
+      {
+        :name => "bonneville_simple_json",
+        :type => "export"
+      }
     end
 
     def perform(result_type, result_id, prefix_name=nil)
