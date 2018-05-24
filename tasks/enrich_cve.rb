@@ -49,8 +49,7 @@ class EnrichCve < Intrigue::Task::BaseTask
         ref["data"] = Bonneville::Scraper::IcsCert.new.scrape(ref["url"])
 
       elsif ref["url"] =~/chromium.org/
-        ref["type"] = "cisco_security"
-        ref["data"] = Bonneville::Scraper::CiscoSecurity.new.scrape(ref["url"])
+        ref["type"] = "chromium"
 
       elsif ref["url"] =~ /ciac.org/
         ref["type"] = "ciac"
@@ -126,7 +125,7 @@ class EnrichCve < Intrigue::Task::BaseTask
         ref["data"] = Bonneville::Api::Xforce.new.query(_get_entity_name)
 
       end
-      
+
       ref["data"] = Bonneville::Scraper::Generic.new.scrape(ref["url"])
       ref["type"] = "unknown_reference"
       ref
