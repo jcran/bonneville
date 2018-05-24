@@ -10,7 +10,6 @@ module Bonneville
         doc = Nokogiri::HTML body
 
         out = {}
-        out["_raw"] = body
 
         advisory = doc.xpath("//*[@id='ncas-content']/div/div/div")
         out[:advisory] = advisory.text if advisory

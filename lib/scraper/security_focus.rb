@@ -11,7 +11,6 @@ module Bonneville
         return nil unless body
         doc = Nokogiri::HTML body
         out = {}
-        out["_raw"] = body
 
         # Seems like this is a combination of desciption, impact
         discussion = doc.xpath("//*[@id='vulnerability']")

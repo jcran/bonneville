@@ -125,13 +125,11 @@ class EnrichCve < Intrigue::Task::BaseTask
         ref["type"] = "xforce"
         ref["data"] = Bonneville::Api::Xforce.new.query(_get_entity_name)
 
-      else
-        ref["data"] = Bonneville::Scraper::Generic.new.scrape(ref["url"])
-        ref["type"] = "unknown_reference"
-
       end
-
-    ref
+      
+      ref["data"] = Bonneville::Scraper::Generic.new.scrape(ref["url"])
+      ref["type"] = "unknown_reference"
+      ref
     end
 
     # save us up

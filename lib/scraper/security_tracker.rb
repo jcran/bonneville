@@ -10,7 +10,6 @@ module Bonneville
         doc = Nokogiri::HTML body
 
         out = {}
-        out["_raw"] = body
 
         desc = doc.xpath("//font")[40]
         out[:description] = desc.text.gsub("\n"," ").gsub("Description:","").strip if desc

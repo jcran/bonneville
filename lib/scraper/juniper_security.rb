@@ -12,7 +12,6 @@ module Bonneville
         doc = Nokogiri::HTML body
 
         out = {}
-        out["_raw"] = body
 
         problem = doc.xpath("//*[@id='moduleAppMain']/div/div/div[4]/div[2]")
         out[:problem] = problem.text if problem
