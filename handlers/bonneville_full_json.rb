@@ -5,6 +5,7 @@ module Handler
     def self.metadata
       {
         :name => "bonneville_full_json",
+        :pretty_name => "[bonneville] Export to Full JSON file (/tmp)",
         :type => "export"
       }
     end
@@ -23,7 +24,7 @@ module Handler
       end
 
       # Write it out
-      File.open("#{$intrigue_basedir}/tmp/#{prefix_name}#{result.name}.bonneville_full.json", "w") do |file|
+      File.open("#{$intrigue_basedir}/tmp/#{prefix_name}#{result.name}.bonneville.full.json", "w") do |file|
         file.write(entities.to_json)
       end
 

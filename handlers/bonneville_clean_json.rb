@@ -5,6 +5,7 @@ module Handler
     def self.metadata
       {
         :name => "bonneville_clean_json",
+        :pretty_name => "[bonneville] Export to Clean JSON file (/tmp)",
         :type => "export"
       }
     end
@@ -23,7 +24,7 @@ module Handler
         # remove raw text
         if tmp[:details] && tmp[:details]["reference_data"]
           new_refs = tmp[:details]["reference_data"].map do |r|
-            r["hidden_raw"] = nil
+            r["raw"] = nil
             r
           end
           tmp[:details]["reference_data"] = new_refs
@@ -35,7 +36,7 @@ module Handler
       end
 
       # Write it out
-      File.open("#{$intrigue_basedir}/tmp/#{prefix_name}#{result.name}.bonneville_clean.json", "w") do |file|
+      File.open("#{$intrigue_basedir}/tmp/#{prefix_name}#{result.name}.bonneville.clean.json", "w") do |file|
         file.write(entities.to_json)
       end
     end

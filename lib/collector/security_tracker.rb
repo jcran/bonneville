@@ -21,13 +21,13 @@ module Bonneville
         out[:raw] = body
 
         desc = doc.xpath("//font")[40]
-        out[:description] = desc.text.gsub("\n"," ").gsub("Description:","").strip if desc
+        out[:versions] = desc.text.gsub("\n"," ").gsub("Version(s): ","").strip if desc
 
         impact = doc.xpath("//font")[41]
-        out[:impact] = impact.text.gsub("\n"," ").gsub("Impact:","").strip if impact
+        out[:description] = impact.text.gsub("\n"," ").gsub("Description: ","").strip if impact
 
         solution = doc.xpath("//font")[42]
-        out[:solution] = solution.text.gsub("\n"," ").gsub("Solution:","").strip if solution
+        out[:impact] = solution.text.gsub("\n"," ").gsub("Impact: ","").strip if solution
 
         _add_reference_data metadata.merge(out).merge(:uri => uri)
       end
