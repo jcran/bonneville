@@ -1,10 +1,16 @@
+Sidekiq::Queue['juniper_security'].limit = 1
+
 module Bonneville
-  module Scraper
-    class JuniperSecurity
+  module Collector
+    class JuniperSecurity < Bonneville::Collector::Base
+      sidekiq_options :queue => "juniper_security", :backtrace => true
 
-      include Intrigue::Task::Web
+      def metadata
+        { :source => "juniper_security" }
+      end
 
-      def scrape(uri)
+      def perform(entity_id, uri)
+        super entity_id
 
         body  = http_get_body uri
         return nil unless body
@@ -12,9 +18,10 @@ module Bonneville
         doc = Nokogiri::HTML body
 
         out = {}
+        out[:raw] = body
 
         problem = doc.xpath("//*[@id='moduleAppMain']/div/div/div[4]/div[2]")
-        out[:problem] = problem.text if problem
+        out[:description] = problem.text if problem
 
         # Parse CVSS since we're in the neighborhood
         cvss_string = doc.xpath("//*[@id='moduleAppMain']/div/div/div[4]/div[11]")
@@ -34,8 +41,7 @@ module Bonneville
           out[:cvss_vector] = vector.first if vector
         end
 
-
-      out
+        _add_reference_data metadata.merge(out).merge(:uri => uri)
       end
 
     end

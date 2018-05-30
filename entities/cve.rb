@@ -11,9 +11,9 @@ class Cve < Intrigue::Model::Entity
   end
 
   def validate_entity
-    name =~ /^cve-.*$/ &&
+    name =~ /^cve-.*$/ #&&
       !details["description"].nil? &&
-      details["references"].kind_of?(Array)
+        details["references"].kind_of?(Array)
   end
 
   def enrichment_tasks
@@ -21,7 +21,7 @@ class Cve < Intrigue::Model::Entity
   end
 
   def detail_string
-    details["references"].map{|r| r["type"] }.join(" | ")
+    details["references"].map{|r| r["type"] }.join(" | ") if details["references"]
   end
 
 end

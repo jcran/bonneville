@@ -1,15 +1,24 @@
+Sidekiq::Queue['security_tracker'].limit = 1
+
 module Bonneville
-  module Scraper
-    class SecurityTracker
+  module Collector
+    class SecurityTracker < Bonneville::Collector::Base
+      sidekiq_options :queue => "security_tracker", :backtrace => true
 
-      include Intrigue::Task::Web
+      def metadata
+        { :source => "security_tracker" }
+      end
 
-      def scrape(uri)
+      def perform(entity_id, uri)
+        super entity_id
+
         body = http_get_body uri
         return nil unless body
+
         doc = Nokogiri::HTML body
 
         out = {}
+        out[:raw] = body
 
         desc = doc.xpath("//font")[40]
         out[:description] = desc.text.gsub("\n"," ").gsub("Description:","").strip if desc
@@ -20,7 +29,7 @@ module Bonneville
         solution = doc.xpath("//font")[42]
         out[:solution] = solution.text.gsub("\n"," ").gsub("Solution:","").strip if solution
 
-      out
+        _add_reference_data metadata.merge(out).merge(:uri => uri)
       end
 
     end

@@ -1,17 +1,15 @@
 module Bonneville
   def version
-    "0.1"
+    "0.2"
   end
 end
 
-### Scrapers
-require_relative 'scraper/cisco_security'
-require_relative 'scraper/generic'
-require_relative 'scraper/ics_cert'
-require_relative 'scraper/juniper_security'
-require_relative 'scraper/security_focus'
-require_relative 'scraper/security_tracker'
-
-### Api
-require_relative 'api/microsoft_security'
-require_relative 'api/xforce'
+require_relative 'collector/base'
+require_relative 'collector/cisco_security'
+require_relative 'collector/generic_html'
+require_relative 'collector/ics_cert'
+require_relative 'collector/juniper_security'
+require_relative 'collector/security_focus'
+require_relative 'collector/security_tracker'
+require_relative 'collector/microsoft_security'
+require_relative 'collector/xforce'

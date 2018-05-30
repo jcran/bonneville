@@ -1,10 +1,10 @@
 module Bonneville
 module Handler
-  class BonnevilleSimpleJson < Intrigue::Handler::Base
+  class BonnevilleCleanJson < Intrigue::Handler::Base
 
     def self.metadata
       {
-        :name => "bonneville_simple_json",
+        :name => "bonneville_clean_json",
         :type => "export"
       }
     end
@@ -21,13 +21,12 @@ module Handler
         tmp = x.export_hash
 
         # remove raw text
-        if tmp[:details] && tmp[:details]["references"]
-          new_refs = tmp[:details]["references"].map do |ref|
-            ref["data"]["_raw"] = nil if ref["data"]
-            ref
+        if tmp[:details] && tmp[:details]["reference_data"]
+          new_refs = tmp[:details]["reference_data"].map do |r|
+            r["hidden_raw"] = nil
+            r
           end
-          #puts "New Refs: #{new_refs}"
-          tmp[:details]["references"] = new_refs
+          tmp[:details]["reference_data"] = new_refs
         end
 
         # save it off
@@ -36,7 +35,7 @@ module Handler
       end
 
       # Write it out
-      File.open("#{$intrigue_basedir}/tmp/#{prefix_name}#{result.name}.bonneville_simple.json", "w") do |file|
+      File.open("#{$intrigue_basedir}/tmp/#{prefix_name}#{result.name}.bonneville_clean.json", "w") do |file|
         file.write(entities.to_json)
       end
     end

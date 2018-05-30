@@ -1,11 +1,27 @@
+Sidekiq::Queue['xforce_api'].limit = 2
+
 module Bonneville
-  module Api
-    class Xforce
+  module Collector
+    class XforceApi < Bonneville::Collector::Base
+      sidekiq_options :queue => "xforce_api", :backtrace => true
 
-      include Intrigue::Task::Web
+      def metadata
+        { :source => "xforce_api" }
+      end
 
-      def query(cve_id)
-        _get_xforce_details(cve_id)
+      def perform(entity_id, cve_id)
+        super entity_id
+
+        out = _get_xforce_details(cve_id).first
+
+        desc = out["description"] if out.kind_of? Hash
+
+        _add_reference_data metadata.merge({
+          :description => desc,
+          :raw => out,
+          :uri => "https://api.xforce.ibmcloud.com/vulnerabilities/search/#{cve_id.upcase}"
+        })
+
       end
 
       private
@@ -18,7 +34,7 @@ module Bonneville
       # @return [Hash] full xforce data
       def _get_xforce_details(cve_id)
 
-        return nil unless "#{ENV["XFORCE_AUTH"]}".length > 0
+        raise "Xforce API key missing!" unless "#{ENV["XFORCE_API_KEY"]}".length > 0
 
         # Query X-force for each
         # get the info from their api

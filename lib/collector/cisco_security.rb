@@ -1,10 +1,16 @@
+Sidekiq::Queue['cisco_security'].limit = 1
+
 module Bonneville
-  module Scraper
-    class CiscoSecurity
+  module Collector
+    class CiscoSecurity < Bonneville::Collector::Base
+      sidekiq_options :queue => "cisco_security", :backtrace => true
 
-      include Intrigue::Task::Web
+      def metadata
+        { :source => "cisco_security" }
+      end
 
-      def scrape(uri)
+      def perform(entity_id, uri)
+        super entity_id
 
         body  = http_get_body uri
         return nil unless body
@@ -12,6 +18,7 @@ module Bonneville
         doc = Nokogiri::HTML body
 
         out = {}
+        out[:raw] = body
 
         # Description
         description = doc.xpath("//*[@id=\"summaryfield\"]")
@@ -21,7 +28,8 @@ module Bonneville
         cwe = doc.xpath("//*[@id=\"advisorycontentheader\"]/div[1]/div[2]/div/div[6]/div/div[2]/div[1]/div")
         out[:cwe] = cwe.text if cwe
 
-      out
+        _add_reference_data metadata.merge(out).merge(:uri => uri)
+
       end
 
     end
