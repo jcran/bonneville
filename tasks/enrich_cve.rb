@@ -52,6 +52,9 @@ class EnrichCve < Intrigue::Task::BaseTask
       elsif ref["url"] =~ /itrc.hp.com/
       elsif ref["url"] =~ /kb.juniper.net/
         Bonneville::Collector::JuniperSecurity.perform_async(eid,ref["url"])
+      elsif ref["url"] =~ /lists.opensuse.org/
+        # Skipping for now, multiple CVEs for a given reference. See:
+        # https://lists.opensuse.org/opensuse-security-announce/2016-03/msg00047.html
       elsif ref["url"] =~ /metasploit.com/
       elsif ref["url"] =~ /nodesecurity.io/
         Bonneville::Collector::NodeSecurity.perform_async(eid,ref["url"])
@@ -67,6 +70,8 @@ class EnrichCve < Intrigue::Task::BaseTask
       elsif ref["url"] =~ /securityfocus.com/
         Bonneville::Collector::SecurityFocus.perform_async(eid,ref["url"])
       elsif ref["url"] =~ /sunsolve.sun.com/
+        # https://lists.opensuse.org/opensuse-security-announce/2016-03/msg00047.html
+
       elsif ref["url"] =~ /patches.sgi.com/
       elsif ref["url"] =~ /exchange.xforce.ibmcloud.com/
       else
