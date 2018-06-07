@@ -18,7 +18,7 @@ module Bonneville
         doc = Nokogiri::HTML body
 
         out = {}
-        out[:description] = doc.xpath("//*[@id="overview"]").text
+        out[:description] = doc.xpath("//*[@id=\"overview\"]").text
 
         _add_reference_data metadata.merge(out).merge(:uri => uri)
       end
