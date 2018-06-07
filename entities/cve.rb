@@ -21,7 +21,7 @@ class Cve < Intrigue::Model::Entity
   end
 
   def detail_string
-    details["reference_data"].map{|r| r["source"] }.join(" | ") if details["references"]
+    details["reference_data"].map{|r| r["source"] }.join(" | ") if details["reference_data"]
   end
 
 end

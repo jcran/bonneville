@@ -4,12 +4,7 @@ module Bonneville
   end
 end
 
+# dynamically load all collectors
 require_relative 'collector/base'
-require_relative 'collector/cisco_security'
-require_relative 'collector/generic_html'
-require_relative 'collector/ics_cert'
-require_relative 'collector/juniper_security'
-require_relative 'collector/security_focus'
-require_relative 'collector/security_tracker'
-require_relative 'collector/microsoft_security'
-require_relative 'collector/xforce'
+cf = File.expand_path('../collector', __FILE__) # get absolute directory
+Dir["#{cf}/*.rb"].each { |file| require_relative file }

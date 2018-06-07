@@ -16,6 +16,7 @@ module Bonneville
       def _add_reference_data(item)
         $db.transaction do
           data = @entity.get_detail("reference_data") || []
+          item.merge(source: self.metadata[:source])
           @entity.set_detail "reference_data", (data << item)
         end
       end

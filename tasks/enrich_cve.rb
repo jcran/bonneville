@@ -58,6 +58,8 @@ class EnrichCve < Intrigue::Task::BaseTask
       elsif ref["url"] =~ /openwall.com/
       elsif ref["url"] =~ /oracle.com\/technetwork\/security-advisory/
       elsif ref["url"] =~ /bugzilla.redhat.com/
+      elsif ref["url"] =~ /secunia.com/
+        Bonneville::Collector::Secunia.perform_async(eid,ref["url"])
       elsif ref["url"] =~ /securitytracker.com/
         Bonneville::Collector::SecurityTracker.perform_async(eid,ref["url"])
       elsif ref["url"] =~ /securityfocus.com/
