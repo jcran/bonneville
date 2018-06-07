@@ -49,6 +49,8 @@ class EnrichCve < Intrigue::Task::BaseTask
         Bonneville::Collector::CiscoSecurity.perform_async(eid,ref["url"])
       elsif ref["url"] =~ /exploit-db.com/
       elsif ref["url"] =~ /fortigard/
+      elsif ref["url"] =~ /www.ibm.com\/blogs\/psirt/
+        Bonneville::Collector::IbmPsirt.perform_async(eid,ref["url"])
       elsif ref["url"] =~ /itrc.hp.com/
       elsif ref["url"] =~ /kb.juniper.net/
         Bonneville::Collector::JuniperSecurity.perform_async(eid,ref["url"])
