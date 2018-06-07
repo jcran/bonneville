@@ -53,6 +53,8 @@ class EnrichCve < Intrigue::Task::BaseTask
       elsif ref["url"] =~ /kb.juniper.net/
         Bonneville::Collector::JuniperSecurity.perform_async(eid,ref["url"])
       elsif ref["url"] =~ /metasploit.com/
+      elsif ref["url"] =~ /nodesecurity.io/
+        Bonneville::Collector::NodeSecurity.perform_async(eid,ref["url"])
       elsif ref["url"] =~ /osvdb.org/
       elsif ref["url"] =~ /portal.msrc.microsoft.com/
       elsif ref["url"] =~ /openwall.com/

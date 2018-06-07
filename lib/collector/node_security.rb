@@ -1,12 +1,12 @@
-Sidekiq::Queue['secunia'].limit = 1
+Sidekiq::Queue['node_security'].limit = 1
 
 module Bonneville
   module Collector
-    class Secunia < Bonneville::Collector::Base
-      sidekiq_options :queue => "secunia", :backtrace => true
+    class NodeSecurity < Bonneville::Collector::Base
+      sidekiq_options :queue => "node_security", :backtrace => true
 
       def metadata
-        {:source => "secunia" }
+        {:source => "node_security" }
       end
 
       def perform(entity_id, uri)
@@ -18,7 +18,7 @@ module Bonneville
         doc = Nokogiri::HTML body
 
         out = {}
-        out[:description] = doc.xpath("/html/body/div[1]/div/div[6]/div/div/div[2]/div/p").text
+        out[:description] = doc.xpath("/html/body/div[2]/section[2]/div/p[1]").text
 
         _add_reference_data metadata.merge(out).merge(:uri => uri)
       end
