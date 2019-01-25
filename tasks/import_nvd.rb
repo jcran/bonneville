@@ -57,8 +57,8 @@ end
           "references" => references
         }
 
-        _log "forcing enrich"
-        e.enrich @task_result
+        #_log "forcing enrich"
+        #e.enrich @task_result
 
       end
     end
