@@ -35,27 +35,32 @@ class EnrichCve < Intrigue::Task::BaseTask
       _log_error "No References!"
     end
 
-    refs.map! do |ref|
+    refs.each do |ref|
 
       # Choose the right parser depending on the URI pattern
       if ref["url"] =~ /source.android.com/
       elsif ref["url"] =~ /support.apple.com/
       elsif ref["url"] =~ /ics-cert.us-cert.gov/
+        _log "Got ICSCert Reference: #{ref["url"]}"
         Bonneville::Collector::IcsCert.perform_async(eid,ref["url"])
       elsif ref["url"] =~/chromium.org/
       elsif ref["url"] =~ /ciac.org/
       elsif ref["url"] =~ /cisecurity.org/
-      elsif ref["url"] =~/tools.cisco.com/
+      elsif ref["url"] =~ /tools.cisco.com/
+        _log "Got Cisco Reference: #{ref["url"]}"
         Bonneville::Collector::CiscoSecurity.perform_async(eid,ref["url"])
       elsif ref["url"] =~ /exploit-db.com/
       elsif ref["url"] =~ /fortigard/
       elsif ref["url"] =~ /www.ibm.com\/blogs\/psirt/
+        _log "Got IBM Reference: #{ref["url"]}"
         Bonneville::Collector::IbmPsirt.perform_async(eid,ref["url"])
       elsif ref["url"] =~ /itrc.hp.com/
       elsif ref["url"] =~ /kb.juniper.net/
+        _log "Got Juniper Reference: #{ref["url"]}"
         Bonneville::Collector::JuniperSecurity.perform_async(eid,ref["url"])
       elsif ref["url"] =~ /metasploit.com/
       elsif ref["url"] =~ /nodesecurity.io/
+        _log "Got Node Security Reference: #{ref["url"]}"
         Bonneville::Collector::NodeSecurity.perform_async(eid,ref["url"])
       elsif ref["url"] =~ /lists.opensuse.org/
         # Skipping for now, multiple CVEs for a given reference. See:
@@ -75,7 +80,7 @@ class EnrichCve < Intrigue::Task::BaseTask
       elsif ref["url"] =~ /bugzilla.redhat.com/
 
         # Test: https://bugzilla.redhat.com/show_bug.cgi?id=1387584 (cve-2016-10255)
-
+        _log "Got Red Hat Reference: #{ref["url"]}"
         Bonneville::Collector::RedHatBugzilla.perform_async(eid,"#{ref["url"]}&ctype=xml")
 
       elsif ref["url"] =~ /rhn.redhat.com\/errata/
@@ -92,17 +97,20 @@ class EnrichCve < Intrigue::Task::BaseTask
         #Bonneville::Collector::RedHatBugzilla.perform_async(eid,red_hat_url)
 
       elsif ref["url"] =~ /secunia.com/
+        _log "Got Secunia Reference: #{ref["url"]}"
         Bonneville::Collector::Secunia.perform_async(eid,ref["url"])
       elsif ref["url"] =~ /securitytracker.com/
+        _log "Got Security Tracker Reference: #{ref["url"]}"
         Bonneville::Collector::SecurityTracker.perform_async(eid,ref["url"])
       elsif ref["url"] =~ /securityfocus.com/
+        _log "Got Security Focus Reference: #{ref["url"]}"
         Bonneville::Collector::SecurityFocus.perform_async(eid,ref["url"])
       elsif ref["url"] =~ /sunsolve.sun.com/
         # https://lists.opensuse.org/opensuse-security-announce/2016-03/msg00047.html
-
       elsif ref["url"] =~ /patches.sgi.com/
       elsif ref["url"] =~ /exchange.xforce.ibmcloud.com/
       else
+        _log "Unknown reference..."
       end
 
     end

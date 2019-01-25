@@ -1,5 +1,7 @@
 Sidekiq::Queue['cisco_security'].limit = 1
 
+## CVE-2018-0365
+
 module Bonneville
   module Collector
     class CiscoSecurity < Bonneville::Collector::Base

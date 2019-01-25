@@ -6,14 +6,14 @@ class Cve < Intrigue::Model::Entity
     {
       :name => "Cve",
       :description => "This is a CVE entry... Mitre Common Vulnerability Enumeration",
-      :user_creatable => false
+      :user_creatable => true
     }
   end
 
   def validate_entity
-    name =~ /^cve-.*$/ #&&
-      !details["description"].nil? &&
-        details["references"].kind_of?(Array)
+    name =~ /^cve-.*$/i #&&
+    #!details["description"].nil? &&
+    #details["references"].kind_of?(Array)
   end
 
   def enrichment_tasks

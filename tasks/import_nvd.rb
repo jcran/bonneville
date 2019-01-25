@@ -48,7 +48,7 @@ end
         references = _get_references(cve_entry)
         description = _get_description(cve_entry)
 
-        _create_entity "Cve", {
+        e = _create_entity "Cve", {
           "name" => cve_id,
           "assigner" => cve_assigner,
           "cwe_id" => cwe_id,
@@ -56,6 +56,9 @@ end
           "description" => description,
           "references" => references
         }
+
+        _log "forcing enrich"
+        e.enrich @task_result
 
       end
     end
@@ -79,7 +82,12 @@ end
 
     elsif year_filter == "all"
 
-      years = ["2018","2017","2016","2015","2014","2013","2012","2011","2010","2009","2008","2007","2006","2005","2004","2003","2002","2001","2000","1999"]
+      years = [
+        "2019","2018","2017","2016","2015","2014","2013",
+        "2012","2011","2010","2009","2008","2007","2006",
+        "2005","2004","2003","2002","2001","2000","1999"
+      ]
+
       years.each do |y|
         filename = "https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-#{y}.json.gz"
         f = download_and_store filename, ["nvdcve-1.0-#{y}",".json.gz"]
@@ -111,6 +119,9 @@ end
   end
 
   def _get_references(cve_entry)
+
+    puts "GOT REFERENCES: #{cve_entry["cve"]["references"]["reference_data"]}"
+
     begin
       return cve_entry["cve"]["references"]["reference_data"]
     rescue NoMethodError => e

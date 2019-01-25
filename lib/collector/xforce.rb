@@ -12,6 +12,12 @@ module Bonneville
       def perform(entity_id, cve_id)
         super entity_id
 
+        #raise "Xforce API key missing!" unless "#{ENV["XFORCE_API_KEY"]}".length > 0
+        unless "#{ENV["XFORCE_API_KEY"]}".length > 0
+          puts "ERROR MISSING XFORCE KEY"
+          return
+        end
+
         out = _get_xforce_details(cve_id).first
 
         desc = out["description"] if out.kind_of? Hash
@@ -34,8 +40,6 @@ module Bonneville
       # @return [Hash] full xforce data
       def _get_xforce_details(cve_id)
 
-        raise "Xforce API key missing!" unless "#{ENV["XFORCE_API_KEY"]}".length > 0
-
         # Query X-force for each
         # get the info from their api
         xforce_uri = "https://api.xforce.ibmcloud.com/vulnerabilities/search/#{cve_id.upcase}"
@@ -43,7 +47,7 @@ module Bonneville
         headers = {
           content_type: :json,
           accept: :json,
-          authorization: "#{ENV["XFORCE_AUTH"]}"
+          authorization: "#{ENV["XFORCE_API_KEY"]}"
         }
 
         begin
