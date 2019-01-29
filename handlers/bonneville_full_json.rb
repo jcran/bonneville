@@ -24,7 +24,7 @@ module Handler
       end
 
       # Write it out
-      File.open("#{$intrigue_basedir}/tmp/#{prefix_name}#{result.name}.bonneville.full.json", "w") do |file|
+      File.open("#{$intrigue_basedir}/public/export/#{prefix_name}#{result.name}.bonneville.full.json", "w") do |file|
         file.write(entities.to_json)
       end
 
