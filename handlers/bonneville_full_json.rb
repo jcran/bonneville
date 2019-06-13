@@ -5,7 +5,7 @@ module Handler
     def self.metadata
       {
         :name => "bonneville_full_json",
-        :pretty_name => "[bonneville] Export to Full JSON file (/tmp)",
+        :pretty_name => "[bonneville] Export to Full JSON file",
         :type => "export"
       }
     end
@@ -15,7 +15,7 @@ module Handler
       return "Unable to process" unless result.respond_to? "export_json"
 
       # create a json_export_file (see core: lib/initialize/json_export_file.rb)
-      j = JsonExportFile.new
+      j = JsonExportFile.new("#{$intrigue_basedir}/public/#{prefix_name}#{result.name}_full.json")
 
       entities = []
       result.entities.each do |x|
@@ -25,7 +25,7 @@ module Handler
         j.store_entity x.export_hash
       end
 
-      j.write_and_close ("#{$intrigue_basedir}/public/#{prefix_name}#{result.name}_full.json")
+      j.write_and_close
 
     end
 
