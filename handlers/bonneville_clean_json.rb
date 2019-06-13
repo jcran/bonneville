@@ -14,6 +14,9 @@ module Handler
       result = eval(result_type).first(id: result_id)
       return "Unable to process" unless result.respond_to? "export_json"
 
+      # create a json_export_file (see core: lib/initialize/json_export_file.rb)
+      j = JsonExportFile.new
+      
       entities = []
       result.entities.each do |x|
         next unless x.kind_of? Bonneville::Entity::Cve
@@ -31,14 +34,12 @@ module Handler
         end
 
         # save it off
-        entities << tmp
-
+        j.store_entity tmp
       end
 
-      # Write it out
-      File.open("#{$intrigue_basedir}/public/export/#{prefix_name}#{result.name}.bonneville.clean.json", "w") do |file|
-        file.write(entities.to_json)
-      end
+
+      j.write_and_close("#{$intrigue_basedir}/public/#{prefix_name}#{result.name}_clean.json")
+
     end
 
   end
