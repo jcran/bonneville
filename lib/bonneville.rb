@@ -4,6 +4,8 @@ module Bonneville
   end
 end
 
+require_relative 'helpers'
+
 # dynamically load all collectors
 require_relative 'collector/base'
 cf = File.expand_path('../collector', __FILE__) # get absolute directory
