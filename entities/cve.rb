@@ -12,8 +12,6 @@ class Cve < Intrigue::Model::Entity
 
   def validate_entity
     name =~ /^cve-.*$/i #&&
-    #!details["description"].nil? &&
-    #details["references"].kind_of?(Array)
   end
 
   def enrichment_tasks

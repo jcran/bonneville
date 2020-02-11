@@ -21,7 +21,7 @@ class EnrichCve < Intrigue::Task::BaseTask
         {:name => "check_nvd_references", :regex=> "boolean", :default => false },
         {:name => "check_xforce", :regex=> "boolean", :default => false },
         {:name => "check_alienvault_otx", :regex=> "boolean", :default => true },
-        {:name => "check_symantec_attack_sigs", :regex=> "boolean", :default => false }
+        {:name => "check_symantec_attack_sigs", :regex=> "boolean", :default => true }
       ],
       :created_types => []
     }
@@ -38,11 +38,7 @@ class EnrichCve < Intrigue::Task::BaseTask
 
     if _get_option "check_nvd_references"
       
-      unless refs
-        
-        _log "No References available, skipping NVD reference checks!"
-
-      else
+      if refs
 
         refs.each do |ref|
 
@@ -123,8 +119,12 @@ class EnrichCve < Intrigue::Task::BaseTask
           end
 
         end # end references iteration
+      
+      else # no refs 
 
-      end # we had refs
+        _log "No References available, skipping NVD reference checks!"
+
+      end 
 
     end # end check_references
 
@@ -146,29 +146,14 @@ class EnrichCve < Intrigue::Task::BaseTask
         # feels hacky to do this here, but it's a set-once kinda thing 
         # (we don't want to scrape unless we have to... )
         #
-        unless $symantec_attack_sig_map
-          $symantec_attack_sig_map = {}
-          map_uri = "https://www.symantec.com/security_response/attacksignatures/"
-          body = http_get_body(map_uri);nil
-          doc = Nokogiri::HTML(body);nil
-          sig_nodes = doc.xpath("/html[1]/body[1]/div[3]/div[2]/div[1]/div[2]/a");nil
-          
-          sig_nodes.each do |node| 
-            cve_match = node.text.match(/(CVE-\d+-\d+)\s/)
-            next unless cve_match
-            cve_id = cve_match.captures.first
-            cve_link = "https://www.symantec.com#{node.attribute("href").value}"
-            $symantec_attack_sig_map[cve_id] = [] unless $symantec_attack_sig_map[cve_id]
-            $symantec_attack_sig_map[cve_id] << cve_link
-          end;nil
+        raise "Missing Symantec Attack Sig Map!" unless $symantec_attack_sig_map
+
+        # grab it for each cve that exists in our map!
+        if $symantec_attack_sig_map[cve_id]
+          Bonneville::Collector::SymantecAttackSigs.perform_async(eid, cve_id)
         end
 
-      # grab it for each cve!
-      Bonneville::Collector::SymantecAttackSigs.perform_async(eid, cve_id)
     end
-
-
-
 
   end
 

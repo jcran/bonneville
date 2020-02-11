@@ -1,4 +1,4 @@
-Sidekiq::Queue['alienvault_otx'].limit = 1
+Sidekiq::Queue['alienvault_otx'].limit = 10
 
 module Bonneville
   module Collector

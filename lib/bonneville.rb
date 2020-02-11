@@ -1,12 +1,12 @@
 module Bonneville
   def version
-    "0.2"
+    "0.3"
   end
 end
 
 require_relative 'helpers'
 
 # dynamically load all collectors
-require_relative 'collector/base'
-cf = File.expand_path('../collector', __FILE__) # get absolute directory
+require_relative 'collectors/base'
+cf = File.expand_path('../collectors', __FILE__) # get absolute directory
 Dir["#{cf}/*.rb"].each { |file| require_relative file }
